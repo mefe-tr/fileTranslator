@@ -1,0 +1,5 @@
+C:\Users\efemu\Masaüstü\Projects\CPlus\fileTranslator\x64\Debug\fileTranslator.vcxproj.AssemblyReference.cache
+C:\Users\efemu\Masaüstü\Projects\CPlus\fileTranslator\x64\Debug\fileTranslator.vcxproj.SuggestedBindingRedirects.cache
+C:\Users\efemu\Masaüstü\Projects\CPlus\fileTranslator\x64\Debug\fileTranslator.Form1.resources
+C:\Users\efemu\Masaüstü\Projects\CPlus\fileTranslator\x64\Debug\fileTranslator.vcxproj.GenerateResource.cache
+C:\Users\efemu\Masaüstü\Projects\CPlus\fileTranslator\x64\Debug\fileTranslator.exe
