@@ -13,33 +13,33 @@ class TranslatorClass
 private:
 	bool isFile{ false };
 	bool* isProcessing, * processResult;
-	int* processStep;
+	string* processMessage;
 
-	string sourceFileName, licensePath, sourceLang, destinationLang;
+	string sourceFileOrFolderName, licensePath, sourceLang, destinationLang;
 	string aStrSourceLanguages[7]{ "Chinese (simplified)", "English", "German", "Italian", "Russian", "Estonian", "Turkish" };
 	string workingDirectoryName{ "temp" }, credentialFileName{ "crt.txt" };
 	string pythonFileName{ "" };
 
 	bool readAndResolveAllFiles(void);
 	bool createCredentialFile(void);
-	bool createCommentFile(string tempFileName);
-	bool createNewTranslatedFile(string temFileName);
+	bool createCommentFile(string tempfileName, string sourceFileName);
+	bool createNewTranslatedFile(string temFileName, string sourceFileName);
 	bool createNewDirectory(void);
 	bool runPython(void);
 	void runningThreadFunction(void);
 
 
 public:
-	TranslatorClass(bool* isProc = nullptr, bool* result = nullptr, int* step = nullptr, string sp = "", string lp = "", string sl = "", string dl = "", bool isf = false) :
-		sourceFileName(sp), licensePath(lp), sourceLang(sl), destinationLang(dl), isFile(isf)
+	TranslatorClass(bool* isProc = nullptr, bool* result = nullptr, string* message = nullptr, string sp = "", string lp = "", string sl = "", string dl = "", bool isf = false) :
+		sourceFileOrFolderName(sp), licensePath(lp), sourceLang(sl), destinationLang(dl), isFile(isf)
 	{
 		isProcessing	= isProc;
-		processResult	 = result;
-		processStep		= step;
+		processResult	= result;
+		processMessage  = message;
 
-		if (isProcessing != nullptr) *isProcessing = true;
-		if (processStep != nullptr) *processStep = 0;
-		if (processResult != nullptr) *processResult = false;
+		if (isProcessing != nullptr)   *isProcessing = true;
+		if (processMessage != nullptr) *processMessage = "Starting file translate...";
+		if (processResult != nullptr)  *processResult = false;
 	}
 
 	static void MarshalString(System::String^ s, std::string& os);

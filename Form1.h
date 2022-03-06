@@ -75,11 +75,10 @@ namespace CppCLRWinFormsProject {
 		System::String^ strFilePath{ "" };
 		System::String^ strLicensePath{ "" };
 		System::String^ strRadioChecked{ "File" };
-		vector<std::string>* infoMessages = new vector<std::string>();
 		bool* isProcessing = new bool{ false };
 		bool* processResult = new bool{ false };
-		int* processStep = new int{ 0 };
-		int prevStep{ 100 };
+		string* processMessage	= new string{ "" };
+		string* prevMessage		= new string{ "starting..." };
 
 	private: System::Windows::Forms::OpenFileDialog^ openFileDialog;
 	private: System::Windows::Forms::TextBox^ tb_licensePath;
@@ -480,7 +479,6 @@ namespace CppCLRWinFormsProject {
 			this->backgroundWorker1->WorkerReportsProgress = true;
 			this->backgroundWorker1->WorkerSupportsCancellation = true;
 			this->backgroundWorker1->DoWork += gcnew System::ComponentModel::DoWorkEventHandler(this, &Form1::backgroundWorker1_DoWork);
-			this->backgroundWorker1->ProgressChanged += gcnew System::ComponentModel::ProgressChangedEventHandler(this, &Form1::backgroundWorker1_ProgressChanged);
 			this->backgroundWorker1->RunWorkerCompleted += gcnew System::ComponentModel::RunWorkerCompletedEventHandler(this, &Form1::backgroundWorker1_RunWorkerCompleted);
 			// 
 			// Form1
@@ -507,7 +505,6 @@ namespace CppCLRWinFormsProject {
 #pragma endregion
 	private: System::Void splitContainer1_Panel1_Paint(System::Object^ sender, System::Windows::Forms::PaintEventArgs^ e) {
 	}
-
 	private: System::Void groupBox1_Enter(System::Object^ sender, System::EventArgs^ e) {
 	}
 	private: System::Void pb_close_Click(System::Object^ sender, System::EventArgs^ e) {
@@ -540,7 +537,6 @@ namespace CppCLRWinFormsProject {
 			this->cb_oLanguage->SelectedIndex = 0;
 			this->cb_tLanguage->SelectedIndex = 0;
 
-			(*infoMessages).clear();
 			this->groupBox1->Select();
 		}
 		catch (const std::exception&)
@@ -710,8 +706,6 @@ namespace CppCLRWinFormsProject {
 							System::Windows::Forms::MessageBoxIcon::Error);
 						return false;
 					}
-
-					(*infoMessages).push_back(filesystem::path(path.c_str()).filename().string());
 				}
 				else
 				{
@@ -727,9 +721,6 @@ namespace CppCLRWinFormsProject {
 							System::Windows::Forms::MessageBoxIcon::Error);
 						return false;
 					}
-
-					for (const auto& entry : filesystem::directory_iterator(path))
-						(*infoMessages).push_back(filesystem::path(entry.path()).filename().string());
 				}
 
 			}
@@ -761,9 +752,6 @@ namespace CppCLRWinFormsProject {
 
 		std::string fileName, license{ "" }, sourceLang{ "ch-CN" }, destinationLang{ "en-US" };
 
-		(*infoMessages).clear();
-		(*infoMessages).push_back("Starting file translate...");
-
 		if (checkCrediantials(fileName, license))
 		{
 			TranslatorClass::MarshalString(cb_oLanguage->SelectedItem->ToString(), sourceLang);
@@ -771,17 +759,14 @@ namespace CppCLRWinFormsProject {
 
 			if (!this->cb_LicenseActive->Checked) license = "";
 
-			(*infoMessages).push_back("All files are translated succesfully...");
-			(*infoMessages).push_back("Unexpected error! Please try again...");
-
 			*isProcessing = false; *processResult = false;
-			*processStep = 0;
+			*processMessage = "Starting file translate...";
+			*prevMessage    = "starting...";
 			this->lb_Info->Text = "Starting file translate...";
 			this->lb_Info->Update();
 
-			TranslatorClass translate(isProcessing, processResult, processStep, fileName, license, sourceLang, destinationLang, rb_file->Checked);
+			TranslatorClass translate(isProcessing, processResult, processMessage, fileName, license, sourceLang, destinationLang, rb_file->Checked);
 
-			prevStep = 100;
 			backgroundWorker1->RunWorkerAsync();
 
 			bool returnValue = translate.run();
@@ -807,12 +792,12 @@ namespace CppCLRWinFormsProject {
 			{
 				if (*isProcessing)
 				{
-					if (*processStep != prevStep)
+					if ( (*processMessage).compare((* prevMessage).c_str()) < 0)
 					{
-						prevStep = *processStep;
+						*prevMessage = *processMessage;
 
 						UpdateInfoLabelUpdateDelegate^ action = gcnew UpdateInfoLabelUpdateDelegate(this, &Form1::updateInfoLabel);
-						this->BeginInvoke(action, gcnew String((*infoMessages).at(*processStep).c_str()));
+						this->BeginInvoke(action, gcnew String((*processMessage).c_str()));
 					}
 				}
 				else 
@@ -834,12 +819,11 @@ private: System::Void backgroundWorker1_RunWorkerCompleted(System::Object^ sende
 
 		if (*processResult) //is finish successfully?
 		{
-			(*infoMessages).pop_back();
-			this->lb_Info->Text = gcnew String((*infoMessages).back().c_str());
+			this->lb_Info->Text = gcnew String((*processMessage).c_str());
 		}
 		else
 		{
-			this->lb_Info->Text = gcnew String((*infoMessages).back().c_str());
+			this->lb_Info->Text = gcnew String((*processMessage).c_str());
 		}
 
 		this->lb_Info->Update();
@@ -849,18 +833,6 @@ private: System::Void backgroundWorker1_RunWorkerCompleted(System::Object^ sende
 	{
 			
 	}
-}
-private: System::Void backgroundWorker1_ProgressChanged(System::Object^ sender, System::ComponentModel::ProgressChangedEventArgs^ e) {
-
-	try
-	{
-		
-	}
-	catch (const std::exception&)
-	{
-			
-	}
-
 }
 };
 }

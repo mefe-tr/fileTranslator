@@ -90,7 +90,7 @@ bool TranslatorClass::runPython(void) {
 		//Close the python instance
 		Py_Finalize();
 
-		bool returnValue = ( result.compare("OK") >= 0 || std::strstr(result.c_str(), "OK") != 0) ? true : false;
+		bool returnValue = (result.compare("OK") >= 0 || std::strstr(result.c_str(), "OK") != 0) ? true : false;
 		return returnValue;
 	}
 	catch (const std::exception&)
@@ -98,11 +98,11 @@ bool TranslatorClass::runPython(void) {
 		return false;
 	}
 }
-bool TranslatorClass::createCommentFile(string fileName)
+bool TranslatorClass::createCommentFile(string tempfileName, string sourceFileName)
 {
 	try
 	{
-		string tempFileName = workingDirectoryName + "\\" + fileName + ".txt";
+		string tempFileName = workingDirectoryName + "\\" + tempfileName + ".txt";
 		pythonFileName = tempFileName;
 
 		fstream readFile, writeFile;
@@ -163,7 +163,7 @@ bool TranslatorClass::createCredentialFile(void)
 		return false;
 	}
 }
-bool TranslatorClass::createNewTranslatedFile(string temFileName) {
+bool TranslatorClass::createNewTranslatedFile(string temFileName, string sourceFileName) {
 	try
 	{
 		string translatedFileName = workingDirectoryName + "\\_" + temFileName + ".txt";
@@ -269,24 +269,37 @@ bool TranslatorClass::readAndResolveAllFiles(void)
 {
 	try
 	{
-		bool returnResult{ false };
 		if (isFile) //if it is a file, the code will be executed for only one file
 		{
-			*processStep = 1;
+			if (!filesystem::exists(sourceFileOrFolderName)) return false;
 
-			if (!filesystem::exists(sourceFileName))
-			{
-				return false;
-			}
+			string tempFilename = filesystem::path(sourceFileOrFolderName).filename().string();
+			*processMessage = tempFilename + " file is translating...";
 
-			if (!createCommentFile("1")) return false;
+			if (!createCommentFile(tempFilename, sourceFileOrFolderName)) return false;
 			if (!runPython()) return false;
-			if (!createNewTranslatedFile("1")) return false;
+			if (!createNewTranslatedFile(tempFilename, sourceFileOrFolderName)) return false;
 
 			return true;
 		}
 		else // Folder
 		{
+			if (!filesystem::is_directory(sourceFileOrFolderName)) return false; //is it a proper file directory?
+
+			for (const auto& entry : filesystem::directory_iterator(sourceFileOrFolderName)) //get each file name from file directory
+			{
+				if (!filesystem::exists(entry.path().string())) continue; //is it a proper file path?
+				string tempFilename = filesystem::path(entry.path()).filename().string(); //get pure file name to use as temporary file name
+
+				*processMessage = tempFilename + " file is translating...";
+
+				if (!createCommentFile(tempFilename, entry.path().string())) continue;
+				if (!runPython()) continue;
+				if (!createNewTranslatedFile(tempFilename, entry.path().string())) continue;
+
+			}
+				
+
 			return true;
 		}
 	}
@@ -326,7 +339,11 @@ void TranslatorClass::runningThreadFunction(void) {
 		bool returnValue = readAndResolveAllFiles();
 		filesystem::remove_all(workingDirectoryName);
 
-		*processResult = returnValue;
+		if(returnValue)
+			*processMessage = "All files are translated succesfully...";
+		else
+			*processMessage = "Unexpected error! Please try again...";
+
 		*isProcessing = false;
 	}
 	catch (const std::exception&)
@@ -342,7 +359,7 @@ void TranslatorClass::runningThreadFunction(void) {
 		}
 
 		*processResult = false;
-		*isProcessing  = false;
+		*isProcessing = false;
 	}
 }
 
@@ -352,17 +369,17 @@ bool TranslatorClass::run()
 	try
 	{
 		*isProcessing = true;
-		*processStep = 0;
+		*processMessage = "Starting file translate...";
 		*processResult = false;
 
-		std::thread th( &TranslatorClass::runningThreadFunction, this );
+		std::thread th(&TranslatorClass::runningThreadFunction, this);
 		th.join();
 
 		return true;
 	}
 	catch (const std::exception&)
 	{
-		if(isProcessing != nullptr)*isProcessing = false;
+		if (isProcessing != nullptr)*isProcessing = false;
 		if (processResult != nullptr)*processResult = false;
 
 		return false;
