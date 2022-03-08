@@ -19,6 +19,7 @@ private:
 	string aStrSourceLanguages[7]{ "Chinese (simplified)", "English", "German", "Italian", "Russian", "Estonian", "Turkish" };
 	string workingDirectoryName{ "temp" }, credentialFileName{ "crt.txt" };
 	string pythonFileName{ "" };
+	char delimeter = ',';
 
 	bool readAndResolveAllFiles(void);
 	bool createCredentialFile(void);

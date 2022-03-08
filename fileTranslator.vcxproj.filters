@@ -54,12 +54,18 @@
     <Image Include="app.ico">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="close.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="startProcess.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="info.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <None Include="pyTranslator.py">
-      <Filter>Source Files</Filter>
-    </None>
-    <None Include="script.py">
       <Filter>Source Files</Filter>
     </None>
   </ItemGroup>

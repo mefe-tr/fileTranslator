@@ -9,7 +9,6 @@
 #include <filesystem>
 #include <fstream>
 #include <array>
-#include <vector>
 #include "translatorClass.h"
 
 //#pragma comment(lib,"Wininet.lib")
@@ -96,6 +95,7 @@ namespace CppCLRWinFormsProject {
 	private: System::Windows::Forms::Label^ lb_Info;
 
 	private: System::ComponentModel::BackgroundWorker^ backgroundWorker1;
+	private: System::Windows::Forms::PictureBox^ pb_info;
 	private: System::ComponentModel::IContainer^ components;
 
 
@@ -118,6 +118,7 @@ namespace CppCLRWinFormsProject {
 			this->lb_Info = (gcnew System::Windows::Forms::Label());
 			this->cb_LicenseActive = (gcnew System::Windows::Forms::CheckBox());
 			this->pb_start = (gcnew System::Windows::Forms::PictureBox());
+			this->pb_info = (gcnew System::Windows::Forms::PictureBox());
 			this->pb_close = (gcnew System::Windows::Forms::PictureBox());
 			this->rb_folder = (gcnew System::Windows::Forms::RadioButton());
 			this->rb_file = (gcnew System::Windows::Forms::RadioButton());
@@ -142,6 +143,7 @@ namespace CppCLRWinFormsProject {
 			this->backgroundWorker1 = (gcnew System::ComponentModel::BackgroundWorker());
 			this->groupBox1->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pb_start))->BeginInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pb_info))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pb_close))->BeginInit();
 			this->SuspendLayout();
 			// 
@@ -151,6 +153,7 @@ namespace CppCLRWinFormsProject {
 			this->groupBox1->Controls->Add(this->lb_Info);
 			this->groupBox1->Controls->Add(this->cb_LicenseActive);
 			this->groupBox1->Controls->Add(this->pb_start);
+			this->groupBox1->Controls->Add(this->pb_info);
 			this->groupBox1->Controls->Add(this->pb_close);
 			this->groupBox1->Controls->Add(this->rb_folder);
 			this->groupBox1->Controls->Add(this->rb_file);
@@ -186,11 +189,11 @@ namespace CppCLRWinFormsProject {
 			this->lb_Info->Font = (gcnew System::Drawing::Font(L"Modern No. 20", 10, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(162)));
 			this->lb_Info->ForeColor = System::Drawing::Color::DarkGoldenrod;
-			this->lb_Info->Location = System::Drawing::Point(68, 181);
+			this->lb_Info->Location = System::Drawing::Point(122, 181);
 			this->lb_Info->Margin = System::Windows::Forms::Padding(5, 0, 5, 0);
 			this->lb_Info->Name = L"lb_Info";
 			this->lb_Info->Padding = System::Windows::Forms::Padding(3);
-			this->lb_Info->Size = System::Drawing::Size(568, 21);
+			this->lb_Info->Size = System::Drawing::Size(514, 21);
 			this->lb_Info->TabIndex = 8;
 			this->lb_Info->TextAlign = System::Drawing::ContentAlignment::MiddleCenter;
 			// 
@@ -217,6 +220,16 @@ namespace CppCLRWinFormsProject {
 			this->pb_start->TabIndex = 6;
 			this->pb_start->TabStop = false;
 			this->pb_start->Click += gcnew System::EventHandler(this, &Form1::pb_start_Click);
+			// 
+			// pb_info
+			// 
+			this->pb_info->Cursor = System::Windows::Forms::Cursors::Hand;
+			this->pb_info->Location = System::Drawing::Point(66, 165);
+			this->pb_info->Name = L"pb_info";
+			this->pb_info->Size = System::Drawing::Size(48, 48);
+			this->pb_info->TabIndex = 5;
+			this->pb_info->TabStop = false;
+			this->pb_info->Click += gcnew System::EventHandler(this, &Form1::pb_info_Click);
 			// 
 			// pb_close
 			// 
@@ -498,6 +511,7 @@ namespace CppCLRWinFormsProject {
 			this->groupBox1->ResumeLayout(false);
 			this->groupBox1->PerformLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pb_start))->EndInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pb_info))->EndInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pb_close))->EndInit();
 			this->ResumeLayout(false);
 
@@ -516,6 +530,7 @@ namespace CppCLRWinFormsProject {
 		{
 			this->pb_close->Image = System::Drawing::Image::FromFile("close.png");
 			this->pb_start->Image = System::Drawing::Image::FromFile("startProcess.png");
+			this->pb_info->Image = System::Drawing::Image::FromFile("info.png");
 			this->tb_path->Text = "";
 
 			vector<string> languagesList;
@@ -833,6 +848,14 @@ private: System::Void backgroundWorker1_RunWorkerCompleted(System::Object^ sende
 	{
 			
 	}
+}
+private: System::Void pb_info_Click(System::Object^ sender, System::EventArgs^ e) {
+	System::Windows::Forms::MessageBox::Show(
+		"This project is designed by Mefe in March 2022\nYou can use the project to translate comments that is in C/C++ and header files.\n"+
+		"The project only supports comment lines starting with '//'.\nThe project is an open source project that's why everybody can redesign it for yourself.",
+		"INFO",
+		System::Windows::Forms::MessageBoxButtons::OK,
+		System::Windows::Forms::MessageBoxIcon::Information);
 }
 };
 }

@@ -82,10 +82,13 @@ def translateDeepTranslator_text(fileName="", srcLang="chinese (simplified)", de
         for index in range(partCount): # Files split into 5000-character chunks will be read and translated sequentially
 
             tempFileName = head + "\\"+str(index)+"_" + tail
+            if(os.path.getsize(tempFileName) == 0):
+                os.remove(tempFileName)
+                continue
             translated = GoogleTranslator(source=srcLang.lower(), target=destLang.lower()).translate_file(tempFileName)
             os.remove(tempFileName)
 
-            with open(outputFileName, 'a') as f: # translated text will be written into output file.
+            with open(outputFileName, 'a', encoding='utf8') as f: # translated text will be written into output file.
                 if index != 0 : f.write( '\n' )
                 f.write( translated )
                 del f
@@ -93,6 +96,6 @@ def translateDeepTranslator_text(fileName="", srcLang="chinese (simplified)", de
             del translated     
 
         return "OK"
-    except Exception as ex:
-        return "ERROR2" + ex.args[0]
+    except Exception:
+        return "ERROR2"
 

@@ -2,4 +2,7 @@ C:\Users\efemu\Masaüstü\Projects\CPlus\fileTranslator\x64\Debug\fileTranslator
 C:\Users\efemu\Masaüstü\Projects\CPlus\fileTranslator\x64\Debug\fileTranslator.vcxproj.SuggestedBindingRedirects.cache
 C:\Users\efemu\Masaüstü\Projects\CPlus\fileTranslator\x64\Debug\fileTranslator.Form1.resources
 C:\Users\efemu\Masaüstü\Projects\CPlus\fileTranslator\x64\Debug\fileTranslator.vcxproj.GenerateResource.cache
+C:\Users\efemu\Masaüstü\Projects\CPlus\fileTranslator\x64\Debug\close.png
+C:\Users\efemu\Masaüstü\Projects\CPlus\fileTranslator\x64\Debug\info.png
+C:\Users\efemu\Masaüstü\Projects\CPlus\fileTranslator\x64\Debug\startProcess.png
 C:\Users\efemu\Masaüstü\Projects\CPlus\fileTranslator\x64\Debug\fileTranslator.exe

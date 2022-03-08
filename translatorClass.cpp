@@ -5,6 +5,7 @@
 #include<filesystem>
 #include<fstream>
 #include<sstream>
+#include <algorithm>
 
 #ifdef _DEBUG
 #undef _DEBUG
@@ -53,7 +54,7 @@ bool TranslatorClass::getSupportedLanguages(vector<string>& languagesList) {
 	}
 	catch (const std::exception&)
 	{
-		for each (string lang in aStrSourceLanguages)
+		for each ( string lang in aStrSourceLanguages )
 		{
 			languagesList.push_back(lang);
 		}
@@ -126,10 +127,9 @@ bool TranslatorClass::createCommentFile(string tempfileName, string sourceFileNa
 			auto pos = tp.find("//");
 			if (pos != std::string::npos) //is there any comment
 			{
-				writeFile << lineCount << "," << tp.substr(pos) << endl;
+				writeFile << lineCount << delimeter << tp.substr(pos) << endl;
 			}
 		}
-
 
 		//Close all opened files
 		if (writeFile.is_open()) writeFile.close();
@@ -168,7 +168,7 @@ bool TranslatorClass::createNewTranslatedFile(string temFileName, string sourceF
 	{
 		string translatedFileName = workingDirectoryName + "\\_" + temFileName + ".txt";
 		string copySourceFileName = filesystem::path(sourceFileName.c_str()).parent_path().string() + "\\old_" + filesystem::path(sourceFileName.c_str()).filename().string();
-		string tempFileName = filesystem::path(sourceFileName.c_str()).parent_path().string() + "\\temp_" + filesystem::path(sourceFileName.c_str()).filename().string();
+		string tempFileName		  = filesystem::path(sourceFileName.c_str()).parent_path().string() + "\\temp_" + filesystem::path(sourceFileName.c_str()).filename().string();
 
 
 		fstream readTranslatedCommentFile, sourceFile, tempWriteFile;
@@ -188,13 +188,42 @@ bool TranslatorClass::createNewTranslatedFile(string temFileName, string sourceF
 
 		auto split = [](string s, char delim) { // Manuel text splitter
 			std::stringstream sstream(s);
-			std::string item;
+			std::string item, acc="";
 			std::vector<std::string> itemList;
 
-			while (std::getline(sstream, item, delim))
+			bool isLineCount = true;
+
+			auto result = [](string s) { // is it a digit?
+							for (char const& c : s) {
+								if (std::isdigit(c) == 0) return false;
+							}
+							return true;
+			};
+
+			while(std::getline(sstream, item, delim)) 
 			{
-				itemList.push_back(item);
+				if (isLineCount)
+				{
+					if (result(item)) //is it a number?
+					{
+						isLineCount = false;
+						itemList.push_back(item); //line number
+						acc = "";
+					}
+					else
+					{ //it is not proper format
+						itemList.clear();
+						return itemList;
+					}
+				}
+				else
+				{
+					// delim character can be found more than 1 in a line. That's why after getting splitted line number, others are collected in a string.
+					acc += item;
+				}
 			}
+
+			itemList.push_back(acc); //comment
 
 			return itemList;
 		};
@@ -212,12 +241,15 @@ bool TranslatorClass::createNewTranslatedFile(string temFileName, string sourceF
 				isReadTranslatedComment = false; // lock reading translated comment as every source code read
 				isAvailableComment = false; // reset available flag
 
-				if (getline(readTranslatedCommentFile, readFileData)) { // read translated file data
+				while (getline(readTranslatedCommentFile, readFileData))
+				{
+					splitText = split(readFileData, delimeter); // split translated comment as line count and comment
+					if (splitText.size() != 2) 
+						continue;  // if it is not proper value, it will try to read next line
 
-					splitText = split(readFileData, ','); // split translated comment as line count and comment
 					translatedLineCount = stoul(splitText[0]); // get lineCount from translated file
 					isAvailableComment = true; // if there is a translated comment, set available active flag
-
+					break;
 				}
 			}
 
@@ -229,6 +261,7 @@ bool TranslatorClass::createNewTranslatedFile(string temFileName, string sourceF
 				{
 					if (translatedLineCount == lineCount)
 					{
+						if( splitText.size() != 2 ) continue;
 						string pureString = sourceFileData.erase(pos);
 						string newLine = pureString + splitText[1];
 						tempWriteFile << newLine << endl;
@@ -260,7 +293,7 @@ bool TranslatorClass::createNewTranslatedFile(string temFileName, string sourceF
 
 		return true;
 	}
-	catch (const std::exception&)
+	catch (const std::exception& ex)
 	{
 		return false;
 	}
