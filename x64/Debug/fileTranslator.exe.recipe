@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project>
+  <ProjectOutputs>
+    <ProjectOutput>
+      <FullPath>C:\Users\efemu\Masaüstü\Projects\CPlus\fileTranslator\x64\Debug\fileTranslator.exe</FullPath>
+    </ProjectOutput>
+  </ProjectOutputs>
+  <ContentFiles>
+    <ContentFile>
+      <FullPath>C:\Users\efemu\Masaüstü\Projects\CPlus\fileTranslator\close.png</FullPath>
+    </ContentFile>
+    <ContentFile>
+      <FullPath>C:\Users\efemu\Masaüstü\Projects\CPlus\fileTranslator\info.png</FullPath>
+    </ContentFile>
+    <ContentFile>
+      <FullPath>C:\Users\efemu\Masaüstü\Projects\CPlus\fileTranslator\startProcess.png</FullPath>
+    </ContentFile>
+  </ContentFiles>
+  <SatelliteDlls />
+  <NonRecipeFileRefs />
+</Project>

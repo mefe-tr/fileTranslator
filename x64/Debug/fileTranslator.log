@@ -1,0 +1,5 @@
+﻿  CppCLR_WinFormsProject.cpp
+  translatorClass.cpp
+C:\Users\efemu\Masaüstü\Projects\CPlus\fileTranslator\translatorClass.cpp(296,31): warning C4101: 'ex': unreferenced local variable
+  AssemblyInfo.obj : MSIL module encountered; incremental linking is disabled for MSIL; performing full link
+  fileTranslator.vcxproj -> C:\Users\efemu\Masaüstü\Projects\CPlus\fileTranslator\x64\Debug\fileTranslator.exe
